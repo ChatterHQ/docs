@@ -1,0 +1,56 @@
+---
+title: "Marketplace"
+description: "Manage stores, product and service listings, and digital assets."
+---
+
+The marketplace domain is where a merchant's catalog lives. It has three parts: **stores** (storefronts), **unified listings** (the products and services in a store), and **digital assets** (downloadable goods attached to listings).
+
+## Stores
+
+A store is a single storefront belonging to the merchant. Most other marketplace calls are scoped to a store via a `storeId`.
+
+- `GET /v1/marketplace/stores` — list stores (paginated, filterable).
+- `POST /v1/marketplace/stores` — create a store.
+- `POST /v1/marketplace/stores/check-slug-availability` — check whether a store slug (its URL handle) is free before creating.
+- `GET /v1/marketplace/stores/{id}` — fetch one store.
+- `PUT /v1/marketplace/stores/{id}` — update a store.
+
+```bash
+curl "https://api.usechatter.app/v1/marketplace/stores?page=1&limit=25" \
+  -H "Authorization: Bearer $CHATTER_API_KEY"
+```
+
+## Unified listings
+
+A **unified listing** represents a product or service offered in a store, including its media, pricing, and customization options.
+
+- `POST /v1/marketplace/unified` — create a listing.
+- `GET /v1/marketplace/unified/my-listings` — list the merchant's listings.
+- `GET /v1/marketplace/unified/{id}` — fetch one listing.
+- `PUT /v1/marketplace/unified/{id}` — update a listing.
+- `DELETE /v1/marketplace/unified/{id}` — remove a listing.
+
+## Digital assets
+
+Digital assets are downloadable files (for example, a PDF or license) attached to a listing.
+
+- `POST /v1/marketplace/digital-assets/upload` — upload a digital asset.
+
+## Typical flow
+
+<Steps>
+  <Step title="Create or select a store">
+    Check the slug, then `POST /v1/marketplace/stores`. Note the store's `id`.
+  </Step>
+  <Step title="Add listings">
+    `POST /v1/marketplace/unified` for each product or service.
+  </Step>
+  <Step title="Attach digital goods (optional)">
+    Upload files with `POST /v1/marketplace/digital-assets/upload`.
+  </Step>
+</Steps>
+
+<Tip>
+  See the exact request bodies, filters, and response schemas for each of these
+  operations in the **API Reference** tab under *Marketplace*.
+</Tip>

@@ -1,0 +1,64 @@
+---
+title: "Authentication"
+description: "Authenticate Partner API requests with a merchant API key using the Authorization or X-Api-Secret header."
+---
+
+Every Partner API request is authenticated with a **merchant API key**. There are no separate client IDs or OAuth flows — the key alone identifies and authorizes the merchant.
+
+## API keys
+
+Keys are issued from your [Chatter dashboard](https://dashboard.usechatter.app). Each key is prefixed to make its environment obvious:
+
+| Prefix         | Environment | Use for                                             |
+| -------------- | ----------- | --------------------------------------------------- |
+| `sk_live_…`    | Production  | Real merchant data, balances, and inventory.        |
+| `sk_sandbox_…` | Sandbox     | Testing and the API Reference playground.           |
+
+<Warning>
+  Treat API keys like passwords. Never commit them to source control, embed them
+  in client-side code, or expose them in a browser. If a key leaks, rotate it
+  from the dashboard immediately.
+</Warning>
+
+## Authorizing a request
+
+You can present the key in one of two headers. Pick whichever fits your HTTP client — they're equivalent.
+
+<Tabs>
+  <Tab title="Authorization: Bearer">
+    ```bash
+    curl https://api.usechatter.app/... \
+      -H "Authorization: Bearer sk_sandbox_your_key_here"
+    ```
+  </Tab>
+  <Tab title="X-Api-Secret">
+    ```bash
+    curl https://api.usechatter.app/... \
+      -H "X-Api-Secret: sk_sandbox_your_key_here"
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  Send **one** of the two headers, not both. `Authorization: Bearer` is the
+  conventional choice for most SDKs; `X-Api-Secret` is handy when the
+  `Authorization` header is already reserved by a gateway or proxy.
+</Note>
+
+## Using the playground
+
+In the **API Reference** tab, click **Authorization** on any endpoint and paste your key into the field. The playground then attaches it to every **Try it** call.
+
+<Tip>
+  Use a `sk_sandbox_…` key in the playground. Calls execute against real
+  endpoints, so a sandbox key keeps your tests away from production data and
+  live quota.
+</Tip>
+
+## Errors
+
+A missing, malformed, or revoked key returns `401 Unauthorized`. A valid key that lacks access to the requested resource returns `403 Forbidden`. Check that:
+
+- The key hasn't been rotated or revoked in the dashboard.
+- You're using a `sk_live_…` key for production data (a sandbox key only sees sandbox data).
+- The key is sent in exactly one of the supported headers.

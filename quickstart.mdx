@@ -1,47 +1,77 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Make your first authenticated Chatter Partner API call in a few minutes."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+This guide takes you from zero to a working API call. You'll create a key, authenticate, and list a merchant's stores.
 
 ## Prerequisites
 
-Before you begin, you must have:
+- A Chatter merchant account with access to the [dashboard](https://dashboard.usechatter.app).
+- A tool that can make HTTP requests (cURL, Postman, or your language's HTTP client).
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+## 1. Create an API key
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
+  <Step title="Open the dashboard">
+    Go to [dashboard.usechatter.app](https://dashboard.usechatter.app) and sign in.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
-
-    ```bash
-    your-cli init
-    ```
+  <Step title="Generate a key">
+    Create an API key. Start with a **sandbox** key (`sk_sandbox_…`) so your first
+    calls don't touch live data.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="Copy it somewhere safe">
+    You'll only see the full key once. Store it as an environment variable rather
+    than pasting it into code:
 
     ```bash
-    your-cli start
+    export CHATTER_API_KEY="sk_sandbox_your_key_here"
     ```
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## 2. Make your first request
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+List the stores on the merchant account. Authenticate with the `Authorization: Bearer` header:
+
+```bash
+curl https://api.usechatter.app/v1/marketplace/stores \
+  -H "Authorization: Bearer $CHATTER_API_KEY"
+```
+
+A successful call returns a paginated JSON body:
+
+```json
+{
+  "meta": { "count": 3, "currentPage": 1, "totalPages": 1, "next": null, "prev": null },
+  "results": [
+    { "id": "store_...", "name": "..." }
+  ]
+}
+```
+
+<Note>
+  Whether a key hits **sandbox** or **live** data is determined by the key's
+  prefix — the base URL is the same for both. See [Authentication](/authentication).
+</Note>
+
+## 3. Explore in the playground
+
+Open the **API Reference** tab, pick any endpoint, click **Authorization**, and paste your key. The **Try it** button runs the request from your browser and shows the live response.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/authentication">
+    Headers, key environments, and error handling.
+  </Card>
+  <Card title="Core concepts" icon="book" href="/concepts/concepts">
+    How merchants, stores, orders, and loyalty fit together.
+  </Card>
+  <Card title="Pagination" icon="list" href="/concepts/pagination">
+    Page through large collections.
+  </Card>
+  <Card title="Errors" icon="triangle-exclamation" href="/concepts/errors">
+    Status codes and how to handle them.
+  </Card>
+</CardGroup>

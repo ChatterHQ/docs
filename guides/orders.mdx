@@ -1,0 +1,44 @@
+---
+title: "Orders"
+description: "Retrieve orders and drive vendor fulfillment — confirm, update, track, cancel, and settle suborders."
+---
+
+When a customer buys from a merchant, the order is split into **suborders** — one per vendor/store fulfilling part of it. The Partner API's order endpoints are vendor-facing: you work with the suborders your merchant is responsible for.
+
+## Reading orders
+
+- `GET /v1/orders/vendor/suborders` — list the merchant's suborders (paginated, filterable by `status` and date range).
+- `GET /v1/orders/suborders/{subOrderId}` — fetch one suborder.
+- `GET /v1/orders/vendor/stats` — order statistics for the vendor.
+
+```bash
+curl "https://api.usechatter.app/v1/orders/vendor/suborders?status=pending&page=1" \
+  -H "Authorization: Bearer $CHATTER_API_KEY"
+```
+
+## Fulfillment lifecycle
+
+<Steps>
+  <Step title="Confirm">
+    `POST /v1/orders/suborders/{subOrderId}/confirm` — accept the suborder.
+  </Step>
+  <Step title="Update status">
+    `PATCH /v1/orders/suborders/{subOrderId}/status` — move it through your
+    fulfillment states.
+  </Step>
+  <Step title="Add tracking">
+    `POST /v1/orders/suborders/{subOrderId}/tracking` — attach carrier and
+    tracking details once shipped.
+  </Step>
+</Steps>
+
+## Cancellations and settlement
+
+- `PATCH /v1/orders/suborders/{subOrderId}/cancel` — cancel a suborder with a refund.
+- `POST /v1/orders/suborders/{subOrderId}/retry-settlement` — retry settlement for a delivered suborder if the initial payout didn't complete.
+
+<Note>
+  Status transitions are validated server-side — for example, you can't add
+  tracking to a suborder that hasn't been confirmed. Check the **API Reference**
+  for the allowed transitions and request bodies.
+</Note>

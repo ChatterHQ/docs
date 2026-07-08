@@ -1,0 +1,70 @@
+---
+title: "Pagination"
+description: "Page through large collections returned by Chatter Partner API list endpoints."
+---
+
+List endpoints return results in pages. The response is an envelope with two keys: `meta` (pagination info) and `results` (the items for the current page).
+
+## Request
+
+Control paging with two query parameters:
+
+| Parameter | Description                          |
+| --------- | ------------------------------------ |
+| `page`    | Page number to fetch (1-based).      |
+| `limit`   | Number of items per page.            |
+
+```bash
+curl "https://api.usechatter.app/v1/marketplace/stores?page=2&limit=25" \
+  -H "Authorization: Bearer $CHATTER_API_KEY"
+```
+
+Many list endpoints also accept filters and sorting — commonly `search`, `status`, `sortBy`, `sortOrder`, and date ranges (`startDate`, `endDate`). Check each endpoint in the **API Reference** for the exact set it supports.
+
+## Response
+
+```json
+{
+  "meta": {
+    "count": 195,
+    "currentPage": 2,
+    "totalPages": 20,
+    "next": 3,
+    "prev": 1
+  },
+  "results": [ /* items for this page */ ]
+}
+```
+
+| Field         | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| `count`       | Total number of items across all pages.              |
+| `currentPage` | The page you requested.                              |
+| `totalPages`  | Total number of pages available.                     |
+| `next`        | Next page number, or `null` on the last page.        |
+| `prev`        | Previous page number, or `null` on the first page.   |
+
+## Iterating through all pages
+
+Follow `meta.next` until it's `null`:
+
+```js
+let page = 1;
+const all = [];
+
+while (page !== null) {
+  const res = await fetch(
+    `https://api.usechatter.app/v1/marketplace/stores?page=${page}&limit=50`,
+    { headers: { Authorization: `Bearer ${process.env.CHATTER_API_KEY}` } },
+  );
+  const body = await res.json();
+  all.push(...body.results);
+  page = body.meta.next; // null when there are no more pages
+}
+```
+
+<Tip>
+  Prefer a larger `limit` to reduce round-trips, but keep responses a
+  manageable size. Always drive the loop off `meta.next` rather than computing
+  page numbers yourself.
+</Tip>

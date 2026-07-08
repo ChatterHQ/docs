@@ -1,0 +1,33 @@
+---
+title: "Coupons"
+description: "Create, manage, and track discount coupons for a merchant's organization."
+---
+
+Coupons are discount codes customers apply at checkout. The API lets you create them, update them, and inspect how they're being used.
+
+## Managing coupons
+
+- `GET /v1/coupons` — list all coupons for the organization (paginated, filterable).
+- `POST /v1/coupons` — create a coupon.
+- `GET /v1/coupons/{id}` — get a single coupon, including usage stats.
+- `PATCH /v1/coupons/{id}` — update a coupon.
+- `DELETE /v1/coupons/{id}` — soft-delete a coupon (it's deactivated, not hard-removed).
+
+```bash
+curl -X POST https://api.usechatter.app/v1/coupons \
+  -H "Authorization: Bearer $CHATTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "code": "WELCOME10", "type": "percentage", "value": 10 }'
+```
+
+## Usage tracking
+
+- `GET /v1/coupons/{id}/usage` — the redemption history for a coupon.
+
+Pair the usage endpoint with the stats on `GET /v1/coupons/{id}` to monitor how a promotion is performing.
+
+<Note>
+  Deletes are **soft** — a deleted coupon stops working but its history remains
+  available for reporting. See the **API Reference** for the full coupon schema
+  (discount types, limits, and validity windows).
+</Note>

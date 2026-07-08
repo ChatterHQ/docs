@@ -1,0 +1,48 @@
+---
+title: "Core concepts"
+description: "The building blocks of the Chatter Partner API — merchants, stores, and the domains you can integrate with."
+---
+
+The Partner API exposes a merchant's commerce, loyalty, and affiliate data. This page explains how the pieces fit together so the endpoints in the API Reference make sense.
+
+## Merchant
+
+Your API key belongs to a single **merchant** — the business you're integrating on behalf of. Every request is scoped to that merchant automatically; there's no merchant ID to pass. Whether calls read sandbox or live data is decided by the key's prefix (see [Authentication](/authentication)).
+
+## Stores
+
+A merchant operates one or more **stores** (storefronts). Most marketplace endpoints are scoped to a store — you'll frequently pass a `storeId` query parameter or path segment to say which storefront you mean.
+
+## Domains
+
+The API is organized into the areas below. Each maps to a group in the **API Reference** tab and has a product guide.
+
+<CardGroup cols={2}>
+  <Card title="Marketplace" icon="store" href="/guides/marketplace">
+    Stores, unified listings, and digital assets.
+  </Card>
+  <Card title="Orders" icon="receipt" href="/guides/orders">
+    Retrieve orders and drive fulfillment.
+  </Card>
+  <Card title="Loyalty" icon="award" href="/guides/loyalty">
+    Programs, tiers, points, and rewards.
+  </Card>
+  <Card title="Coupons" icon="ticket" href="/guides/coupons">
+    Discount codes and validation.
+  </Card>
+  <Card title="Affiliates" icon="handshake" href="/guides/affiliates">
+    Affiliate programs and partner-driven sales.
+  </Card>
+</CardGroup>
+
+## Conventions
+
+- **Base URL** — every endpoint lives under `https://api.usechatter.app`, with a `/v1` prefix on paths.
+- **JSON** — requests and responses use `application/json`.
+- **Collections are paginated** — list endpoints return a `meta` + `results` envelope. See [Pagination](/concepts/pagination).
+- **Errors use standard HTTP status codes** — see [Errors](/concepts/errors).
+
+<Note>
+  The Partner API is a strict subset of the full Chatter platform — only routes
+  explicitly opened for partner integrations appear in the reference.
+</Note>

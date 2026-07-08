@@ -1,0 +1,82 @@
+---
+title: "Introduction"
+description: "Build on Chatter with the Partner API — commerce, loyalty, and affiliate endpoints for external integrations."
+---
+
+The **Chatter Partner API** lets external partners integrate with a merchant's Chatter account programmatically. It's a curated subset of the full Chatter platform — only the routes explicitly opened up for partner integrations are documented here.
+
+Every request is authenticated with a merchant **API key** (`sk_live_…` or `sk_sandbox_…`). See [Authentication](/authentication) to get started.
+
+<Card title="Authenticate your first request" icon="key" href="/authentication">
+  Create an API key, choose between the `Authorization: Bearer` and `X-Api-Secret`
+  header, and make a test call in a couple of minutes.
+</Card>
+
+## Base URL
+
+All endpoints are served from a single production host:
+
+```
+https://api.usechatter.app
+```
+
+Use a `sk_sandbox_…` key to exercise the same endpoints against sandbox data without touching production balances or inventory.
+
+## What you can build
+
+The API is grouped into seven areas, each available as a group in the **API Reference** tab:
+
+<CardGroup cols={2}>
+  <Card title="Marketplace Stores" icon="store">
+    Read and manage the storefronts a merchant operates.
+  </Card>
+  <Card title="Marketplace Unified Listings" icon="tags">
+    Work with product and service listings across a merchant's stores.
+  </Card>
+  <Card title="Marketplace Digital Assets" icon="file-lock">
+    Access digital goods attached to listings.
+  </Card>
+  <Card title="Orders" icon="receipt">
+    Retrieve orders and drive fulfillment workflows.
+  </Card>
+  <Card title="Loyalty Management" icon="award">
+    Issue and manage loyalty programs, tiers, and member rewards.
+  </Card>
+  <Card title="Coupons" icon="ticket">
+    Create and validate discount coupons.
+  </Card>
+  <Card title="Affiliate Programs" icon="handshake">
+    Set up affiliate programs and track partner-driven sales.
+  </Card>
+</CardGroup>
+
+## How the reference works
+
+Open the **API Reference** tab in the top navigation. Every operation has:
+
+- A full request/response schema generated from the live OpenAPI spec.
+- A **Try it** playground — set your API key once and call the endpoint from the browser.
+- Language code samples you can copy into your integration.
+
+<Note>
+  Playground calls hit **real** endpoints with your **real** key. Use a
+  `sk_sandbox_…` key while you're testing so you don't affect production data or
+  consume live quota.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Make your first authenticated call in a few minutes.
+  </Card>
+  <Card title="Authentication" icon="key" href="/authentication">
+    Set up API keys and pick an auth header.
+  </Card>
+  <Card title="Core concepts" icon="book" href="/concepts/concepts">
+    How merchants, stores, and the domains fit together.
+  </Card>
+  <Card title="Dashboard" icon="gauge" href="https://dashboard.usechatter.app">
+    Manage keys, view usage, and configure your integration.
+  </Card>
+</CardGroup>

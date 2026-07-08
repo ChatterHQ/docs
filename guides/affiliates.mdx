@@ -1,0 +1,56 @@
+---
+title: "Affiliates"
+description: "Run affiliate programs — manage the program lifecycle, affiliates, invitations, and commissions."
+---
+
+Affiliate programs let a merchant recruit partners who drive sales in exchange for commission. The API covers the full lifecycle: the program itself, the affiliates in it, invitations, and the commissions they earn.
+
+## Programs
+
+- `GET /v1/affiliate/programs` · `POST /v1/affiliate/programs` — list and create programs.
+- `GET`/`PATCH`/`DELETE /v1/affiliate/programs/{id}` — manage a program (delete is a soft-delete).
+
+A program moves through states you control explicitly:
+
+- `PATCH /v1/affiliate/programs/{id}/activate` — take a draft or paused program live.
+- `PATCH /v1/affiliate/programs/{id}/pause` — pause an active program.
+- `PATCH /v1/affiliate/programs/{id}/close` — permanently close a program.
+
+## Affiliates (members)
+
+- `GET /v1/affiliate/programs/{id}/members` — list affiliates in a program.
+- `PATCH .../members/{memberId}/approve` · `.../reject` — decide on pending applications.
+- `PATCH .../members/{memberId}/suspend` · `.../reinstate` — manage active affiliates.
+
+## Invitations
+
+- `POST /v1/affiliate/programs/{id}/invite` — invite a user by email.
+- `POST .../invitations/{invitationId}/resend` — resend a pending invite.
+- `DELETE .../invitations/{invitationId}` — revoke a pending invite.
+
+## Analytics and commissions
+
+- `GET /v1/affiliate/programs/{id}/analytics` — clicks, conversions, revenue, and top affiliates.
+- `GET /v1/affiliate/programs/{id}/commissions` — commissions for the program (paginated, filterable).
+
+```bash
+curl "https://api.usechatter.app/v1/affiliate/programs/$PROGRAM_ID/analytics" \
+  -H "Authorization: Bearer $CHATTER_API_KEY"
+```
+
+## Typical flow
+
+<Steps>
+  <Step title="Create a program">
+    `POST /v1/affiliate/programs` — it starts as a draft.
+  </Step>
+  <Step title="Recruit affiliates">
+    Invite by email, or approve incoming applications with the member endpoints.
+  </Step>
+  <Step title="Activate">
+    `PATCH /v1/affiliate/programs/{id}/activate` to go live.
+  </Step>
+  <Step title="Track performance">
+    Poll `/analytics` and reconcile payouts against `/commissions`.
+  </Step>
+</Steps>

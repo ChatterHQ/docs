@@ -1,0 +1,39 @@
+---
+title: "Errors"
+description: "How the Chatter Partner API reports errors and the status codes to expect."
+---
+
+The API uses conventional HTTP status codes. A `2xx` means success; `4xx` means the request was rejected (usually something you can fix); `5xx` means something went wrong on Chatter's side.
+
+## Status codes
+
+| Code  | Meaning                 | What to do                                                                 |
+| ----- | ----------------------- | -------------------------------------------------------------------------- |
+| `200` | OK                      | Request succeeded.                                                         |
+| `201` | Created                 | The resource was created.                                                 |
+| `400` | Bad Request             | Invalid input — check the request body and query parameters.              |
+| `401` | Unauthorized            | Missing, malformed, or revoked API key. See [Authentication](/authentication). |
+| `403` | Forbidden               | The key is valid but lacks access to this resource.                       |
+| `404` | Not Found               | The resource (or `storeId`) doesn't exist, or isn't visible to this key.  |
+| `500` | Internal Server Error   | A problem on Chatter's side — retry, and contact support if it persists.  |
+
+## Handling errors
+
+<Steps>
+  <Step title="Check the status code first">
+    Branch on the HTTP status before parsing the body.
+  </Step>
+  <Step title="Fix 4xx errors before retrying">
+    A `400`/`401`/`403`/`404` won't succeed on retry without a change — correct
+    the input, the key, or the resource ID.
+  </Step>
+  <Step title="Retry 5xx with backoff">
+    Transient `500`s can be retried with exponential backoff. Don't retry `4xx`.
+  </Step>
+</Steps>
+
+<Warning>
+  A `401` most often means the key was rotated or revoked, or that a sandbox key
+  is being used against live data (or vice versa). Confirm the key and its
+  environment before debugging further.
+</Warning>

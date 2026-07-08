@@ -1,0 +1,48 @@
+---
+title: "Loyalty"
+description: "Run a merchant's loyalty program — configuration, tiers, points, rewards, and redemptions."
+---
+
+The loyalty domain lets you manage a merchant's rewards program end to end: how points are earned, the tiers customers progress through, the rewards they can redeem, and the fulfillment of those redemptions.
+
+## Configuration
+
+- `GET /v1/loyalty/manage/config` — get (or lazily create) the merchant's loyalty configuration.
+- `PATCH /v1/loyalty/manage/config` — update how the program behaves, including points-per-action rules.
+
+## Tiers
+
+Tiers are the levels customers move through (for example, Silver → Gold).
+
+- `GET /v1/loyalty/manage/tiers` — list tiers.
+- `POST /v1/loyalty/manage/tiers` — create a tier.
+- `PATCH /v1/loyalty/manage/tiers/{tierId}` — update a tier.
+- `DELETE /v1/loyalty/manage/tiers/{tierId}` — delete a tier.
+
+## Points
+
+- `POST /v1/loyalty/manage/points/award` — manually award points to a customer.
+- `POST /v1/loyalty/manage/points/deduct` — deduct points from a customer.
+- `GET /v1/loyalty/manage/customers/{customerId}/loyalty` — view a customer's loyalty detail (balance, tier, history).
+
+```bash
+curl -X POST https://api.usechatter.app/v1/loyalty/manage/points/award \
+  -H "Authorization: Bearer $CHATTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "customerId": "cust_...", "points": 500, "reason": "Promo" }'
+```
+
+## Rewards and redemptions
+
+Rewards make up the catalog customers spend points on; redemptions are the requests to claim them.
+
+- `GET /v1/loyalty/manage/rewards` · `POST /v1/loyalty/manage/rewards` — list and create rewards.
+- `GET`/`PATCH`/`DELETE /v1/loyalty/manage/rewards/{rewardId}` — manage a reward.
+- `GET /v1/loyalty/manage/redemptions` — list redemption requests.
+- `POST /v1/loyalty/manage/redemptions/{redemptionId}/fulfill` — mark a redemption fulfilled.
+- `POST /v1/loyalty/manage/redemptions/{redemptionId}/cancel` — cancel a redemption and refund the points.
+
+<Tip>
+  A typical integration reads `config`, seeds `tiers` and `rewards`, then awards
+  points on your own business events and fulfills redemptions as they come in.
+</Tip>
