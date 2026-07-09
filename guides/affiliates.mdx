@@ -10,17 +10,14 @@ Affiliate programs let a merchant recruit partners who drive sales in exchange f
 - `GET /v1/affiliate/programs` · `POST /v1/affiliate/programs` — list and create programs.
 - `GET`/`PATCH`/`DELETE /v1/affiliate/programs/{id}` — manage a program (delete is a soft-delete).
 
-A program moves through states you control explicitly:
+A program moves through states via a single status endpoint:
 
-- `PATCH /v1/affiliate/programs/{id}/activate` — take a draft or paused program live.
-- `PATCH /v1/affiliate/programs/{id}/pause` — pause an active program.
-- `PATCH /v1/affiliate/programs/{id}/close` — permanently close a program.
+- `PATCH /v1/affiliate/programs/{id}/status` — set `action` to `activate`, `pause`, or `close`.
 
 ## Affiliates (members)
 
 - `GET /v1/affiliate/programs/{id}/members` — list affiliates in a program.
-- `PATCH .../members/{memberId}/approve` · `.../reject` — decide on pending applications.
-- `PATCH .../members/{memberId}/suspend` · `.../reinstate` — manage active affiliates.
+- `PATCH .../members/{memberId}/status` — set `action` to `approve`, `reject`, `suspend`, or `reinstate` (include a `reason` when suspending).
 
 ## Invitations
 
@@ -35,7 +32,7 @@ A program moves through states you control explicitly:
 
 ```bash
 curl "https://api.usechatter.app/v1/affiliate/programs/$PROGRAM_ID/analytics" \
-  -H "Authorization: Bearer $CHATTER_API_KEY"
+  -H "X-Api-Key: $CHATTER_API_KEY"
 ```
 
 ## Typical flow
@@ -48,7 +45,7 @@ curl "https://api.usechatter.app/v1/affiliate/programs/$PROGRAM_ID/analytics" \
     Invite by email, or approve incoming applications with the member endpoints.
   </Step>
   <Step title="Activate">
-    `PATCH /v1/affiliate/programs/{id}/activate` to go live.
+    `PATCH /v1/affiliate/programs/{id}/status` with `{ "action": "activate" }` to go live.
   </Step>
   <Step title="Track performance">
     Poll `/analytics` and reconcile payouts against `/commissions`.

@@ -15,7 +15,7 @@ Coupons are discount codes customers apply at checkout. The API lets you create 
 
 ```bash
 curl -X POST https://api.usechatter.app/v1/coupons \
-  -H "Authorization: Bearer $CHATTER_API_KEY" \
+  -H "X-Api-Key: $CHATTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "code": "WELCOME10", "type": "percentage", "value": 10 }'
 ```

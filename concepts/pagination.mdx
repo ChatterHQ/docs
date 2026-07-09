@@ -16,7 +16,7 @@ Control paging with two query parameters:
 
 ```bash
 curl "https://api.usechatter.app/v1/marketplace/stores?page=2&limit=25" \
-  -H "Authorization: Bearer $CHATTER_API_KEY"
+  -H "X-Api-Key: $CHATTER_API_KEY"
 ```
 
 Many list endpoints also accept filters and sorting — commonly `search`, `status`, `sortBy`, `sortOrder`, and date ranges (`startDate`, `endDate`). Check each endpoint in the **API Reference** for the exact set it supports.
@@ -55,7 +55,7 @@ const all = [];
 while (page !== null) {
   const res = await fetch(
     `https://api.usechatter.app/v1/marketplace/stores?page=${page}&limit=50`,
-    { headers: { Authorization: `Bearer ${process.env.CHATTER_API_KEY}` } },
+    { headers: { "X-Api-Key": process.env.CHATTER_API_KEY } },
   );
   const body = await res.json();
   all.push(...body.results);

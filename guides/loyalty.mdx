@@ -27,7 +27,7 @@ Tiers are the levels customers move through (for example, Silver → Gold).
 
 ```bash
 curl -X POST https://api.usechatter.app/v1/loyalty/manage/points/award \
-  -H "Authorization: Bearer $CHATTER_API_KEY" \
+  -H "X-Api-Key: $CHATTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "customerId": "cust_...", "points": 500, "reason": "Promo" }'
 ```
