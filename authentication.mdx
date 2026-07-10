@@ -1,6 +1,6 @@
 ---
 title: "Authentication"
-description: "Authenticate Partner API requests with a merchant API key using the Authorization or X-Api-Secret header."
+description: "Authenticate Partner API requests with a merchant API key using the X-Api-Key header."
 ---
 
 Every Partner API request is authenticated with a **merchant API key**. There are no separate client IDs or OAuth flows — the key alone identifies and authorizes the merchant.
@@ -22,28 +22,12 @@ Keys are issued from your [Chatter dashboard](https://dashboard.usechatter.app).
 
 ## Authorizing a request
 
-You can present the key in one of two headers. Pick whichever fits your HTTP client — they're equivalent.
+Send the key in the `X-Api-Key` header on every request:
 
-<Tabs>
-  <Tab title="Authorization: Bearer">
-    ```bash
-    curl https://api.usechatter.app/... \
-      -H "Authorization: Bearer sk_sandbox_your_key_here"
-    ```
-  </Tab>
-  <Tab title="X-Api-Secret">
-    ```bash
-    curl https://api.usechatter.app/... \
-      -H "X-Api-Secret: sk_sandbox_your_key_here"
-    ```
-  </Tab>
-</Tabs>
-
-<Note>
-  Send **one** of the two headers, not both. `Authorization: Bearer` is the
-  conventional choice for most SDKs; `X-Api-Secret` is handy when the
-  `Authorization` header is already reserved by a gateway or proxy.
-</Note>
+```bash
+curl https://api.usechatter.app/... \
+  -H "X-Api-Key: sk_sandbox_your_key_here"
+```
 
 ## Using the playground
 
@@ -61,4 +45,4 @@ A missing, malformed, or revoked key returns `401 Unauthorized`. A valid key tha
 
 - The key hasn't been rotated or revoked in the dashboard.
 - You're using a `sk_live_…` key for production data (a sandbox key only sees sandbox data).
-- The key is sent in exactly one of the supported headers.
+- The key is sent in the `X-Api-Key` header.

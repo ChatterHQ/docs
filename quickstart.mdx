@@ -32,11 +32,11 @@ This guide takes you from zero to a working API call. You'll create a key, authe
 
 ## 2. Make your first request
 
-List the stores on the merchant account. Authenticate with the `Authorization: Bearer` header:
+List the stores on the merchant account. Authenticate with the `X-Api-Key` header:
 
 ```bash
 curl https://api.usechatter.app/v1/marketplace/stores \
-  -H "Authorization: Bearer $CHATTER_API_KEY"
+  -H "X-Api-Key: $CHATTER_API_KEY"
 ```
 
 A successful call returns a paginated JSON body:

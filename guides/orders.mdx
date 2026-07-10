@@ -13,7 +13,7 @@ When a customer buys from a merchant, the order is split into **suborders** — 
 
 ```bash
 curl "https://api.usechatter.app/v1/orders/vendor/suborders?status=pending&page=1" \
-  -H "Authorization: Bearer $CHATTER_API_KEY"
+  -H "X-Api-Key: $CHATTER_API_KEY"
 ```
 
 ## Fulfillment lifecycle
