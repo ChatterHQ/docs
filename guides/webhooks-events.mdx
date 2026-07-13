@@ -1,0 +1,376 @@
+---
+title: "Event catalog"
+description: "Every outgoing webhook event type, shown as the full payload you'll actually receive."
+---
+
+Every outgoing webhook delivery has the same overall shape, no matter which event it is — Chatter just fills in a different `data` section depending on what happened. Below, each event type shows the **entire payload** you'll receive, not just the `data` part on its own, so you can see exactly what lands on your endpoint.
+
+| Field | What it is |
+| --- | --- |
+| `id` | A unique ID for this event. If Chatter retries a delivery, it reuses the same `id` — safe to use for making sure you don't process the same event twice. |
+| `type` | The event type, like `order.confirmed`. Use this to decide how to handle the payload. |
+| `environment` | Either `sandbox` or `live`. A sandbox endpoint only ever receives sandbox events, and a live endpoint only ever receives live ones. |
+| `created_at` | When the event happened. |
+| `organization_id` | The ID of the merchant account this event belongs to — useful if your app connects to more than one Chatter account. |
+| `data` | The details specific to this event type, shown in full below for each one. |
+| `metadata.api_version` | A version tag for this payload shape, in case it changes later. |
+
+<Note>
+  Sending yourself a test event from the dashboard uses `type: "test.ping"` by default, unless you pick a specific type, and adds `metadata.is_test: true`. Real events never have `is_test` set.
+</Note>
+
+---
+
+## Live — these are actually sent today
+
+### Orders
+
+#### `order.confirmed`
+
+Sent once, right when a customer's order payment is confirmed.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5f6",
+  "type": "order.confirmed",
+  "environment": "live",
+  "created_at": "2026-07-12T09:14:03.221Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "order_id": "665f1c2a4e4b0c1a2b3d4e60",
+    "order_number": "ORD-20260712-0042",
+    "amount": 15000,
+    "buyer_name": "Ada Obi"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `order.shipped`
+
+Sent when a vendor's part of an order (a "suborder") moves to in-transit.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5f7",
+  "type": "order.shipped",
+  "environment": "live",
+  "created_at": "2026-07-12T10:02:11.045Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "sub_order_id": "665f1c2a4e4b0c1a2b3d4e61",
+    "sub_order_number": "SUB-20260712-0042-1",
+    "order_id": "665f1c2a4e4b0c1a2b3d4e60",
+    "previous_status": "processing",
+    "status": "in_transit"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `order.delivered`
+
+Sent when that suborder is marked delivered.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5f8",
+  "type": "order.delivered",
+  "environment": "live",
+  "created_at": "2026-07-13T08:41:57.114Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "sub_order_id": "665f1c2a4e4b0c1a2b3d4e61",
+    "sub_order_number": "SUB-20260712-0042-1",
+    "order_id": "665f1c2a4e4b0c1a2b3d4e60",
+    "previous_status": "in_transit",
+    "status": "delivered"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `order.cancelled`
+
+Sent when a suborder is cancelled.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5f9",
+  "type": "order.cancelled",
+  "environment": "live",
+  "created_at": "2026-07-12T11:20:33.870Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "sub_order_id": "665f1c2a4e4b0c1a2b3d4e62",
+    "sub_order_number": "SUB-20260712-0043-1",
+    "order_id": "665f1c2a4e4b0c1a2b3d4e63",
+    "previous_status": "processing",
+    "status": "cancelled"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `order.refunded`
+
+Sent when a suborder is refunded — either the vendor cancels it with a refund, or the payment provider refunds it directly.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5fa",
+  "type": "order.refunded",
+  "environment": "live",
+  "created_at": "2026-07-14T09:05:12.512Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "sub_order_id": "665f1c2a4e4b0c1a2b3d4e64",
+    "sub_order_number": "SUB-20260712-0044-1",
+    "order_id": "665f1c2a4e4b0c1a2b3d4e65",
+    "previous_status": "delivered",
+    "status": "refunded"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+<Note>
+  These five cover the only suborder status changes that send a webhook today. Other statuses (`confirmed`, `processing`, `ready_for_pickup`, `completed`) don't trigger their own event yet — `order.confirmed` above already covers the main "payment went through" moment at the order level.
+</Note>
+
+### Payments and payouts
+
+These only ever happen for a merchant's business account — never for money moving directly between two individual customers (see "Not live yet," below, for why there's no `transfer.*` event).
+
+#### `virtual_account.credited`
+
+Sent when money lands in a merchant's virtual account — for example, a customer paying by bank transfer.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5fb",
+  "type": "virtual_account.credited",
+  "environment": "live",
+  "created_at": "2026-07-12T09:30:02.001Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "virtual_account_id": "665f1c2a4e4b0c1a2b3d4e70",
+    "amount": 25000,
+    "currency": "NGN",
+    "balance": 187500,
+    "reference": "MNFY|PSTK-REF-88213774"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `payout.completed`
+
+Sent when a merchant successfully withdraws money out of their virtual account.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5fc",
+  "type": "payout.completed",
+  "environment": "live",
+  "created_at": "2026-07-12T14:12:47.330Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "withdrawal_id": "665f1c2a4e4b0c1a2b3d4e80",
+    "virtual_account_id": "665f1c2a4e4b0c1a2b3d4e70",
+    "amount": 50000,
+    "currency": "NGN"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `payout.failed`
+
+Same as `payout.completed`, but the withdrawal didn't go through — with a `reason` explaining why.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5fd",
+  "type": "payout.failed",
+  "environment": "live",
+  "created_at": "2026-07-12T14:15:09.884Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "withdrawal_id": "665f1c2a4e4b0c1a2b3d4e81",
+    "virtual_account_id": "665f1c2a4e4b0c1a2b3d4e70",
+    "amount": 50000,
+    "currency": "NGN",
+    "reason": "Insufficient balance at disbursement provider"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+### Loyalty
+
+<Note>
+  Loyalty events always have `environment: "live"` — loyalty doesn't have a separate sandbox mode yet, so you can't test these on a sandbox-only endpoint.
+</Note>
+
+#### `loyalty.points_earned`
+
+Sent when a customer earns points from a purchase that qualifies for the loyalty program.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5fe",
+  "type": "loyalty.points_earned",
+  "environment": "live",
+  "created_at": "2026-07-12T09:45:20.660Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "merchant_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+    "store_id": "665f1c2a4e4b0c1a2b3d4e90",
+    "customer_id": "665f1c2a4e4b0c1a2b3d4e91",
+    "sale_id": "665f1c2a4e4b0c1a2b3d4e92",
+    "points_earned": 150,
+    "new_balance": 2340
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `loyalty.points_redeemed`
+
+Sent when a customer spends their points on a reward.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4e5ff",
+  "type": "loyalty.points_redeemed",
+  "environment": "live",
+  "created_at": "2026-07-12T15:08:44.212Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "merchant_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+    "store_id": "665f1c2a4e4b0c1a2b3d4e90",
+    "customer_id": "665f1c2a4e4b0c1a2b3d4e91",
+    "redemption_id": "665f1c2a4e4b0c1a2b3d4e93",
+    "points_redeemed": 500,
+    "new_balance": 1840,
+    "reward_name": "₦2,000 off next purchase"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+### Digital products
+
+#### `digital_product.entitlement_granted`
+
+Sent when a buyer gets access to a digital product — usually right after their order payment is confirmed.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4ea3",
+  "type": "digital_product.entitlement_granted",
+  "environment": "live",
+  "created_at": "2026-07-12T09:14:05.900Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "entitlement_id": "665f1c2a4e4b0c1a2b3d4ea0",
+    "product_id": "665f1c2a4e4b0c1a2b3d4ea1",
+    "sub_order_id": "665f1c2a4e4b0c1a2b3d4e61",
+    "order_id": "665f1c2a4e4b0c1a2b3d4e60",
+    "copy_index": 0,
+    "is_gift": false
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+If someone buys 3 copies of the same product in one order, you'll get 3 of these events, with `copy_index` 0, 1, and 2.
+
+#### `digital_product.downloaded`
+
+Sent every time someone downloads (or otherwise uses) a digital product they have access to.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4ea4",
+  "type": "digital_product.downloaded",
+  "environment": "live",
+  "created_at": "2026-07-12T11:02:18.410Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "entitlement_id": "665f1c2a4e4b0c1a2b3d4ea0",
+    "product_id": "665f1c2a4e4b0c1a2b3d4ea1",
+    "asset_id": "665f1c2a4e4b0c1a2b3d4ea2",
+    "download_count": 1
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+#### `digital_product.entitlement_revoked`
+
+Sent when someone's access is taken away — a refund, chargeback, or manual action by the merchant.
+
+```json
+{
+  "id": "evt_65f1c2a4e4b0c1a2b3d4ea5",
+  "type": "digital_product.entitlement_revoked",
+  "environment": "live",
+  "created_at": "2026-07-15T13:47:02.230Z",
+  "organization_id": "64e1c2a4e4b0c1a2b3d4e5f7",
+  "data": {
+    "entitlement_id": "665f1c2a4e4b0c1a2b3d4ea0",
+    "product_id": "665f1c2a4e4b0c1a2b3d4ea1",
+    "sub_order_id": "665f1c2a4e4b0c1a2b3d4e61",
+    "order_item_id": null,
+    "reason": "sub_order_refunded"
+  },
+  "metadata": {
+    "api_version": "2026-03-01"
+  }
+}
+```
+
+## Not live yet — safe to subscribe to, but nothing will arrive
+
+These event types exist and Chatter will let you subscribe to them (including through a wildcard like `payment.*`), but nothing triggers them yet — so subscribing is harmless, you just won't receive anything for them until they're switched on.
+
+| Category | Types |
+| --- | --- |
+| Orders | `order.created` |
+| Payments | `payment.received`, `payment.completed`, `payment.failed` |
+| Transfers | `transfer.initiated`, `transfer.completed`, `transfer.failed` |
+| Virtual accounts | `virtual_account.created`, `virtual_account.deactivated` |
+| Customers | `customer.created`, `customer.updated` |
+| Store/catalog | `store.created`, `store.updated`, `product.created`, `product.updated`, `product.deleted` |
+| Payouts | `payout.initiated` |
+| Invoices | `invoice.created`, `invoice.paid`, `invoice.overdue` |
+
+<Warning>
+  Don't build features around these yet — treat this as a heads-up about what might come later, not a promise. `transfer.*` especially may never become a webhook you can receive: it covers personal transfers between individual users, which aren't tied to any merchant account.
+</Warning>

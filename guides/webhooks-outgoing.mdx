@@ -1,0 +1,236 @@
+---
+title: "Outgoing webhooks"
+description: "Receive real-time notifications when orders, payments, loyalty, or digital-product events happen in a merchant's Chatter org."
+---
+
+An outgoing webhook is Chatter calling your server the moment something happens — an order ships, a virtual account gets paid into, a customer earns loyalty points, a digital product gets downloaded. Instead of your app repeatedly asking "did anything change?", Chatter tells you as soon as it does. See the [event catalog](/guides/webhooks-events) for every event type and what its payload looks like.
+
+## Register an endpoint
+
+Create an endpoint with your API key, the same way you'd call any other endpoint on this API. Use a sandbox key while testing and a live key once you're ready — the key you use decides which environment the endpoint belongs to, so sandbox and live are always registered separately:
+
+```bash
+curl -X POST https://api.usechatter.app/v1/organizations/outgoing-webhooks \
+  -H "X-Api-Key: $CHATTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://yourapp.example.com/webhooks/chatter",
+    "label": "Production order events",
+    "events": ["order.confirmed", "order.shipped", "loyalty.*"]
+  }'
+```
+
+| Field | What it means |
+| --- | --- |
+| `url` | The address on your server that Chatter sends events to. It needs to be publicly reachable — addresses like `localhost` or private/internal IPs are rejected up front, so a bad URL is caught right away instead of quietly failing later. |
+| `label` | A name so you can tell endpoints apart. |
+| `events` | Which event types you want to receive — see below. |
+
+<Note>
+  Creating, editing, deleting, or testing an endpoint needs your key to have the `webhooks:manage` scope (just viewing them needs `webhooks:read`, which `webhooks:manage` already includes). If a call you expect to work gets rejected, check your key's scopes first — the error message won't tell you which one is missing.
+</Note>
+
+The response includes a **secret** — but only once:
+
+```json
+{
+  "webhook": {
+    "id": "665f1c2a4e4b0c1a2b3d4eb0",
+    "organizationId": "64e1c2a4e4b0c1a2b3d4e5f7",
+    "environment": "live",
+    "url": "https://yourapp.example.com/webhooks/chatter",
+    "label": "Production order events",
+    "events": ["order.confirmed", "order.shipped", "loyalty.*"],
+    "status": "active",
+    "failureCount": 0,
+    "secret": "whsec_9f1a2b3c4d5e6f7089ab1234cdef5678..."
+  }
+}
+```
+
+Copy `secret` somewhere safe, like a secrets manager — you'll need it to verify events are really from Chatter, and no other response ever shows it again. If you lose it, delete the endpoint and create a new one to get a fresh secret.
+
+Chatter blocks obviously unsafe URLs (`localhost`, private/internal IPs) at creation time, so a bad URL fails immediately instead of failing silently later at delivery time. Each environment allows up to **10 outgoing webhooks per account**.
+
+<Tip>
+  Prefer clicking over calling the API? You can do all of this from your dashboard's **Webhooks** page instead — same result, just a UI. There, the environment comes from your dashboard's sandbox/live toggle instead of your key.
+</Tip>
+
+## Choose which events to receive
+
+The `events` field accepts three kinds of patterns, and you can mix them on one endpoint:
+
+| Pattern | Example | What it sends you |
+| --- | --- | --- |
+| One exact event | `order.confirmed` | Just that event type |
+| Everything in a category | `loyalty.*` | Every loyalty event, now and any added later |
+| Everything | `*` | Every event type, in every category |
+
+<Tip>
+  If you want "all order activity" without picking each event one by one, use `order.*`. New event types added to that category later start arriving automatically — no changes needed on your end.
+</Tip>
+
+## Check that events really came from Chatter
+
+Anyone could send a request to your endpoint's URL pretending to be Chatter, so you need a way to confirm a request is genuine and hasn't been tampered with. Every delivery includes three headers to help you do that:
+
+```
+Webhook-Id: evt_65f1c2a4e4b0c1a2b3d4e5f6
+Webhook-Timestamp: 1799749243
+Webhook-Signature: t=1799749243,v1=6d1f...a92c
+```
+
+Here's the idea: Chatter combines the timestamp and the exact request body, runs them through a one-way scrambling function (called HMAC-SHA256) together with your secret, and sends you the result as `Webhook-Signature`. You do the same calculation on your end using your copy of the secret. If your result matches what Chatter sent, the request is genuine — nobody else knows your secret, so nobody else could have produced that value.
+
+Pick your language below:
+
+<CodeGroup>
+
+```js Node.js
+const crypto = require("crypto");
+
+function verifyChatterWebhook(rawBody, signatureHeader, secret) {
+  const [tPart, v1Part] = signatureHeader.split(",");
+  const timestamp = tPart.split("=")[1];
+  const providedSignature = v1Part.split("=")[1];
+
+  const signedPayload = `${timestamp}.${rawBody}`;
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(signedPayload)
+    .digest("hex");
+
+  const expected = Buffer.from(expectedSignature, "hex");
+  const provided = Buffer.from(providedSignature, "hex");
+  if (expected.length !== provided.length) return false;
+  return crypto.timingSafeEqual(expected, provided);
+}
+```
+
+```php PHP
+<?php
+
+function verifyChatterWebhook(string $rawBody, string $signatureHeader, string $secret): bool
+{
+    [$tPart, $v1Part] = explode(',', $signatureHeader);
+    $timestamp = explode('=', $tPart)[1];
+    $providedSignature = explode('=', $v1Part)[1];
+
+    $signedPayload = $timestamp . '.' . $rawBody;
+    $expectedSignature = hash_hmac('sha256', $signedPayload, $secret);
+
+    return hash_equals($expectedSignature, $providedSignature);
+}
+```
+
+```java Java
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
+public class ChatterWebhookVerifier {
+
+  public static boolean verify(String rawBody, String signatureHeader, String secret) throws Exception {
+    String[] headerParts = signatureHeader.split(",");
+    String timestamp = headerParts[0].split("=")[1];
+    String providedSignature = headerParts[1].split("=")[1];
+
+    String signedPayload = timestamp + "." + rawBody;
+
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+    byte[] hash = mac.doFinal(signedPayload.getBytes(StandardCharsets.UTF_8));
+
+    StringBuilder hex = new StringBuilder();
+    for (byte b : hash) {
+      hex.append(String.format("%02x", b));
+    }
+
+    return MessageDigest.isEqual(
+      hex.toString().getBytes(StandardCharsets.UTF_8),
+      providedSignature.getBytes(StandardCharsets.UTF_8)
+    );
+  }
+}
+```
+
+```csharp C#
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
+public static class ChatterWebhookVerifier
+{
+    public static bool Verify(string rawBody, string signatureHeader, string secret)
+    {
+        var headerParts = signatureHeader.Split(',');
+        var timestamp = headerParts[0].Split('=')[1];
+        var providedSignature = headerParts[1].Split('=')[1];
+
+        var signedPayload = $"{timestamp}.{rawBody}";
+
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
+        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(signedPayload));
+        var expectedSignature = Convert.ToHexString(hash).ToLowerInvariant();
+
+        return CryptographicOperations.FixedTimeEquals(
+            Encoding.UTF8.GetBytes(expectedSignature),
+            Encoding.UTF8.GetBytes(providedSignature)
+        );
+    }
+}
+```
+
+</CodeGroup>
+
+A few things worth knowing:
+
+- Check the signature against the **exact bytes Chatter sent**, before your framework parses the JSON. If you re-encode the JSON yourself and check against that instead, tiny formatting differences (like field order or spacing) can make a genuine request look invalid.
+- Reject anything where the timestamp is more than 5 minutes old — this stops someone from capturing an old request and resending it later to trick your server.
+- Chatter doesn't follow redirects. If your endpoint responds with a redirect (`301`/`302`), that delivery is marked as failed — point the URL at its final destination directly.
+
+## What happens if delivery fails
+
+Chatter doesn't wait around for your server to respond before moving on — sending an event queues it up and continues immediately.
+
+- **Timeout** — Chatter waits up to 15 seconds for your server to respond. Anything that isn't a success response (`2xx`), or that times out, disconnects, or redirects, counts as a failed attempt.
+- **Retries** — Chatter tries again automatically, up to 6 times, waiting longer between each attempt:
+
+  | Attempt | How long after the last one |
+  | --- | --- |
+  | 1 | Right away |
+  | 2 | 30 seconds |
+  | 3 | 2 minutes |
+  | 4 | 15 minutes |
+  | 5 | 1 hour |
+  | 6 | 4 hours |
+
+- **One log per event** — you'll see one entry per event (not one per attempt), and it updates as retries happen: pending → retrying → delivered, or failed once all 6 attempts are used up.
+- **Endpoints that keep failing get paused automatically** — if an endpoint fails all 6 attempts too many times in a row (50, by default), Chatter turns it off so it stops wasting effort on a broken connection. You'll need to fix the problem and turn it back on yourself, which also resets the failure count.
+- **Retrying by hand** — you can also manually resend any single failed delivery. This is separate from the automatic retries, happens once, right away, and does count against the auto-pause limit if it fails too.
+
+## Test before going live
+
+```bash
+curl -X POST https://api.usechatter.app/v1/organizations/outgoing-webhooks/{webhookId}/test \
+  -H "X-Api-Key: $CHATTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "eventType": "order.confirmed" }'
+```
+
+You'll see the result immediately, and it's always safe to send as many as you like — test events never count toward the failure total or trigger the auto-pause. You can also do this from the dashboard by opening the endpoint and clicking **Send test event**.
+
+## Manage your endpoints
+
+- `GET /v1/organizations/outgoing-webhooks` — list your endpoints for the active environment.
+- `GET /v1/organizations/outgoing-webhooks/{webhookId}` — view one endpoint's details.
+- `PATCH /v1/organizations/outgoing-webhooks/{webhookId}` — update its URL, label, events, or status.
+- `DELETE /v1/organizations/outgoing-webhooks/{webhookId}` — remove it.
+- `GET /v1/organizations/outgoing-webhooks/{webhookId}/logs` — see delivery attempts, filterable by status or event type.
+- `GET /v1/organizations/outgoing-webhooks/logs/{logId}` — see the full detail of one delivery, including what was sent and what your server responded with.
+- `POST /v1/organizations/outgoing-webhooks/logs/{logId}/retry` — manually resend one failed delivery.
+
+<Note>
+  Viewing (list/get/logs) needs the `webhooks:read` scope; everything else needs `webhooks:manage` (which also covers read). All of the above work the same way from the dashboard's **Webhooks** page if you'd rather click than call the API. Turning a paused endpoint back on resets its failure count to zero.
+</Note>

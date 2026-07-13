@@ -1,0 +1,117 @@
+---
+title: "Incoming webhooks"
+description: "Forward your own POS or bank provider's events to Chatter so sales made outside Chatter's rails still count toward loyalty."
+---
+
+If a merchant takes payment through something other than Chatter's own payment system — a POS terminal, a bank virtual account provider like Moniepoint, OPay, Paystack, or Flutterwave, or something custom — Chatter has no way of knowing that sale happened. Incoming webhooks fix that: you forward the provider's own event to Chatter, and Chatter checks it, makes sense of it, and awards loyalty points on it as if it had processed the sale itself.
+
+Think of it as the reverse of [outgoing webhooks](/guides/webhooks-outgoing): outgoing webhooks are "Chatter tells you what happened," incoming webhooks are "you tell Chatter what happened."
+
+## Providers Chatter already knows how to check
+
+| Provider | How the signature is checked | Where it's sent |
+| --- | --- | --- |
+| Moniepoint | HMAC-SHA512 (a keyed checksum, similar to how outgoing webhooks are verified) | `x-monnify-signature` header |
+| Paystack | HMAC-SHA512 | `x-paystack-signature` header |
+| Flutterwave | A shared secret sent as plain text and compared directly | `verif-hash` header |
+| OPay | HMAC-SHA512 or SHA3-512 over specific fields joined together | A `sha512` field inside the request body itself, not a header |
+| Custom | Nothing by default — you configure what to check | Wherever you tell Chatter to look |
+
+## Set up in two steps
+
+<Steps>
+  <Step title="Register the webhook and get a URL to give your provider">
+    ```bash
+    curl -X POST https://api.usechatter.app/v1/organizations/incoming-webhooks \
+      -H "X-Api-Key: $CHATTER_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "provider": "moniepoint",
+        "label": "Store POS Terminal",
+        "sourceType": "pos"
+      }'
+    ```
+
+    ```json
+    {
+      "webhook": {
+        "id": "665f1c2a4e4b0c1a2b3d4ec0",
+        "organizationId": "64e1c2a4e4b0c1a2b3d4e5f7",
+        "environment": "live",
+        "provider": "moniepoint",
+        "label": "Store POS Terminal",
+        "sourceType": "pos",
+        "ingestionUrl": "https://api.usechatter.app/v1/webhooks/incoming/665f1c2a4e4b0c1a2b3d4ec0/events",
+        "requiresSecret": true,
+        "secretConfigured": false,
+        "signatureScheme": "hmac_sha512_header",
+        "signatureHeader": "x-monnify-signature",
+        "status": "pending_secret"
+      }
+    }
+    ```
+
+    The webhook starts out `pending_secret`. It'll acknowledge requests sent to `ingestionUrl` — always responding `200`, so your provider doesn't think it's broken and start retrying aggressively — but it won't trust or process anything until the next step.
+  </Step>
+  <Step title="Add your provider's secret, then point the provider at that URL">
+    ```bash
+    curl -X PATCH https://api.usechatter.app/v1/organizations/incoming-webhooks/{webhookId} \
+      -H "X-Api-Key: $CHATTER_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{ "providerSecret": "mfk_live_abc123def456..." }'
+    ```
+
+    This switches the webhook to `active`. Then, log in to your **provider's own dashboard** and set `ingestionUrl` (from step 1) as where they should send their webhook events.
+
+    Using a custom provider? You can also tell Chatter exactly which header (or body field) and which method to check, to match whatever your own system sends.
+  </Step>
+</Steps>
+
+<Tip>
+  Prefer clicking over calling the API? Your dashboard's **Webhooks** page has an **Incoming** tab that does the same thing — same result, just a UI.
+</Tip>
+
+<Note>
+  Both steps need your key to have the `webhooks:manage` scope (`webhooks:read` is enough to just view them). With an API key, the environment (sandbox/live) is decided by the key itself; from the dashboard, it follows your sandbox/live toggle.
+</Note>
+
+## What happens when your provider sends an event
+
+Your provider posts directly to the `ingestionUrl` Chatter gave you — there's no login or API key involved on that request, Chatter trusts it only if its signature checks out.
+
+```
+POST /v1/webhooks/incoming/{webhookId}/events
+```
+
+- Whether the webhook doesn't exist, is paused, or the signature check fails, Chatter always responds `200 { "acknowledged": true }` either way. This is deliberate — it stops your provider from seeing an error and hammering the URL with retries. To actually see what happened, check the delivery logs below.
+- Chatter checks the signature against the exact request your provider sent, before anything is reformatted — make sure your provider (or your own system, for a custom setup) signs it the same way.
+- Once a request passes the check, Chatter matches it to a sale and awards loyalty points if it qualifies.
+
+## Keep an eye on it
+
+- `GET /v1/organizations/incoming-webhooks` — list your incoming webhooks for the active environment.
+- `GET /v1/organizations/incoming-webhooks/{webhookId}` — view one, including how many events it's received and when the last one came in.
+- `PATCH /v1/organizations/incoming-webhooks/{webhookId}` — update its label, pause or reactivate it, change signature settings, or finish setting up its secret.
+- `DELETE /v1/organizations/incoming-webhooks/{webhookId}` — remove it.
+- `GET /v1/organizations/incoming-webhooks/{webhookId}/logs` — browse a log of every event it received, filtered by status or event type.
+- `GET /v1/organizations/incoming-webhooks/logs/{logId}` — open one log entry to see exactly why a signature check failed, if it did.
+
+<Note>
+  Viewing (list/get/logs) needs the `webhooks:read` scope; everything else needs `webhooks:manage` (which also covers read).
+</Note>
+
+## Test your setup
+
+There's no "send a test event" button for incoming webhooks yet, unlike outgoing webhooks.
+
+<Steps>
+  <Step title="Trigger a real transaction, or use your provider's test mode">
+    If your provider has its own sandbox or test mode, use that. Otherwise, a small real transaction works too. Either way, check the logs afterward for status `processed`.
+  </Step>
+  <Step title="If it didn't work, the status tells you why">
+    `signature_failed` means the secret or signature settings don't match what your provider is actually sending. `processing_failed` means the signature was fine, but Chatter couldn't match the event to a sale.
+  </Step>
+  <Step title="Still stuck? Ask support">
+    Chatter's support team can send a test event on your behalf against a non-production environment — this isn't something you can trigger yourself yet, so reach out if you need it.
+  </Step>
+</Steps>

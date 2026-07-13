@@ -38,6 +38,15 @@
               "guides/coupons",
               "guides/affiliates"
             ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "guides/webhooks",
+              "guides/webhooks-outgoing",
+              "guides/webhooks-incoming",
+              "guides/webhooks-events"
+            ]
           }
         ]
       },

@@ -1,0 +1,64 @@
+---
+title: "Webhooks"
+description: "Get real-time notifications from Chatter, or forward your own payment provider's events in for loyalty tracking."
+---
+
+Chatter has two separate webhook systems. They send data in opposite directions, so pick the one that matches what you're building:
+
+| | Direction | What it's for | Who sets it up |
+| --- | --- | --- | --- |
+| **[Outgoing webhooks](/guides/webhooks-outgoing)** | Chatter → your server | Notifies your server the moment something happens in a merchant's account — an order, a payment, a loyalty reward, a digital product download | You, with your API key or from the dashboard |
+| **[Incoming webhooks](/guides/webhooks-incoming)** | Your payment provider → Chatter | Forwards events from a provider you already use (Moniepoint, OPay, Paystack, Flutterwave) so Chatter can award loyalty points on sales it never directly processed | You, with your API key or from the dashboard, then set up on the provider's side too |
+
+Most people only need **outgoing webhooks** — it's how your server finds out about order and payment activity without constantly asking the API "did anything change?" (polling). Incoming webhooks are only needed if a merchant takes payments through a provider outside Chatter's own payment system and still wants those sales to count toward loyalty.
+
+<Note>
+  You can set up both kinds of webhooks the same way you'd call any other endpoint on this API — with `X-Api-Key` — or by clicking through your dashboard's **Webhooks** page instead. No dashboard login is required if your integration is otherwise fully API-driven.
+</Note>
+
+## Before you start
+
+- **Test in sandbox first.** Every account has a sandbox — a separate space for testing that doesn't touch real data. Add your endpoint there, trigger some test activity, and make sure your server handles it correctly before doing the same in live.
+- **Sandbox and live are separate.** A webhook registered with a sandbox key only ever sends sandbox events, and one registered with a live key only ever sends live events. You'll usually add one of each.
+
+## Quick start: your first outgoing webhook
+
+<Steps>
+  <Step title="Register an endpoint">
+    Using a sandbox key:
+
+    ```bash
+    curl -X POST https://api.usechatter.app/v1/organizations/outgoing-webhooks \
+      -H "X-Api-Key: $CHATTER_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{ "url": "https://yourapp.example.com/webhooks/chatter", "events": ["order.confirmed"] }'
+    ```
+
+    Save the `secret` from the response — you won't be able to see it again.
+  </Step>
+  <Step title="Send yourself a test event">
+    ```bash
+    curl -X POST https://api.usechatter.app/v1/organizations/outgoing-webhooks/{webhookId}/test \
+      -H "X-Api-Key: $CHATTER_API_KEY"
+    ```
+
+    Confirm it arrives, and that you can verify its signature — see [Outgoing webhooks](/guides/webhooks-outgoing) for how.
+  </Step>
+  <Step title="Try it with a real sandbox order, then go live">
+    Place a test order in sandbox and confirm `order.confirmed` arrives the same way. Once your server handles it correctly, register the same kind of endpoint with a live key (`sk_live_…`).
+  </Step>
+</Steps>
+
+Head to [Outgoing webhooks](/guides/webhooks-outgoing) for the full walkthrough, and check the [event catalog](/guides/webhooks-events) before you write handling code for an event — not every type is active yet.
+
+<CardGroup cols={3}>
+  <Card title="Outgoing webhooks" icon="webhook" href="/guides/webhooks-outgoing">
+    Registering endpoints, checking signatures, retries, and delivery logs.
+  </Card>
+  <Card title="Incoming webhooks" icon="arrow-down-to-bracket" href="/guides/webhooks-incoming">
+    Forward Moniepoint, Paystack, Flutterwave, or OPay events for loyalty.
+  </Card>
+  <Card title="Event catalog" icon="list-check" href="/guides/webhooks-events">
+    Every event type, its full payload, and what's live vs. coming soon.
+  </Card>
+</CardGroup>
