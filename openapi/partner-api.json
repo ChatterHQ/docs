@@ -251,7 +251,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UnifiedListingResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UnifiedListingResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -793,7 +804,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UnifiedListingDetailResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UnifiedListingDetailResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -944,7 +966,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UnifiedListingUpdateResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UnifiedListingUpdateResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -1304,7 +1337,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SingleStoreCreateResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/StoreCreateResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -1504,7 +1548,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StoreListResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/PaginatedResponse"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -1644,7 +1699,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CheckSlugAvailabilityResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SlugAvailabilityResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -1789,7 +1855,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SingleStoreResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/StoreResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -1939,7 +2016,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SingleStoreResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/StoreResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -11422,6 +11510,2908 @@
           }
         ]
       }
+    },
+    "/v1/organizations/outgoing-webhooks": {
+      "get": {
+        "operationId": "OutgoingWebhookController_listWebhooks",
+        "summary": "List outgoing webhooks",
+        "description": "Returns all outgoing webhook endpoints configured for the organization in the active environment.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Outgoing webhooks retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OutgoingWebhookListDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "OutgoingWebhookController_createWebhook",
+        "summary": "Create outgoing webhook",
+        "description": "Registers a new outgoing webhook endpoint. Validates the URL against SSRF and tests connectivity.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOutgoingWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Webhook created (signing secret shown once)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OutgoingWebhookWithSecretDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid URL or limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Invalid URL or limit reached"
+                        },
+                        "errorCode": {
+                          "example": "VALIDATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 400
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/outgoing-webhooks/{webhookId}": {
+      "get": {
+        "operationId": "OutgoingWebhookController_getWebhook",
+        "summary": "Get outgoing webhook details",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Outgoing webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OutgoingWebhookDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Webhook not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "OutgoingWebhookController_updateWebhook",
+        "summary": "Update outgoing webhook",
+        "description": "Update URL, subscribed events, label, or status.",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Outgoing webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOutgoingWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OutgoingWebhookDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Webhook not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "OutgoingWebhookController_deleteWebhook",
+        "summary": "Delete outgoing webhook",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Outgoing webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Webhook not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/outgoing-webhooks/{webhookId}/test": {
+      "post": {
+        "operationId": "OutgoingWebhookController_testWebhook",
+        "summary": "Send test webhook",
+        "description": "Sends a test event to the webhook endpoint and returns the delivery result.",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Outgoing webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestOutgoingWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test delivery result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DeliveryResultResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/outgoing-webhooks/{webhookId}/logs": {
+      "get": {
+        "operationId": "OutgoingWebhookController_listLogs",
+        "summary": "List delivery logs for an outgoing webhook",
+        "description": "Returns paginated delivery attempt logs with filtering by status and event type.",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Outgoing webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by delivery status",
+            "schema": {
+              "enum": [
+                "pending",
+                "delivered",
+                "failed",
+                "retrying"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by event type",
+            "schema": {
+              "example": "order.created",
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Start date",
+            "schema": {
+              "example": "2026-03-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "End date",
+            "schema": {
+              "example": "2026-03-16T23:59:59Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OutgoingWebhookLogListDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/outgoing-webhooks/logs/{logId}": {
+      "get": {
+        "operationId": "OutgoingWebhookController_getLogDetail",
+        "summary": "Get outgoing webhook log detail",
+        "parameters": [
+          {
+            "name": "logId",
+            "required": true,
+            "in": "path",
+            "description": "Log entry ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Log detail retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OutgoingWebhookLogDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Log not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Log not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/outgoing-webhooks/logs/{logId}/retry": {
+      "post": {
+        "operationId": "OutgoingWebhookController_retryDelivery",
+        "summary": "Manually retry a failed delivery",
+        "description": "Re-delivers the payload for a failed outgoing webhook log entry.",
+        "parameters": [
+          {
+            "name": "logId",
+            "required": true,
+            "in": "path",
+            "description": "Log entry ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retry result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DeliveryResultResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Log not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Log not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Outgoing Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/incoming-webhooks": {
+      "get": {
+        "operationId": "IncomingWebhookController_listWebhooks",
+        "summary": "List incoming webhooks",
+        "description": "Returns all incoming webhook configurations for the active environment.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Incoming webhooks retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/IncomingWebhookListDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Incoming Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "IncomingWebhookController_createWebhook",
+        "summary": "Create incoming webhook",
+        "description": "Registers a new incoming webhook for a payment provider. Returns a unique ingestion URL to configure in the provider dashboard.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIncomingWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Webhook created with ingestion URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/IncomingWebhookDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Limit reached or invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Limit reached or invalid input"
+                        },
+                        "errorCode": {
+                          "example": "VALIDATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 400
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Incoming Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/incoming-webhooks/{webhookId}": {
+      "get": {
+        "operationId": "IncomingWebhookController_getWebhook",
+        "summary": "Get incoming webhook details",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Incoming webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/IncomingWebhookDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Webhook not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Incoming Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "IncomingWebhookController_updateWebhook",
+        "summary": "Update incoming webhook",
+        "description": "Update label, status, or add the provider verification secret (Step 2 of setup).",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Incoming webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIncomingWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/IncomingWebhookDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Webhook not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Incoming Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "IncomingWebhookController_deleteWebhook",
+        "summary": "Delete incoming webhook",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Incoming webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Webhook not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Incoming Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/incoming-webhooks/{webhookId}/logs": {
+      "get": {
+        "operationId": "IncomingWebhookController_listLogs",
+        "summary": "List event logs for an incoming webhook",
+        "description": "Returns paginated event ingestion logs with filtering by status and provider event type.",
+        "parameters": [
+          {
+            "name": "webhookId",
+            "required": true,
+            "in": "path",
+            "description": "Incoming webhook ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by processing status",
+            "schema": {
+              "enum": [
+                "received",
+                "signature_failed",
+                "processing",
+                "processed",
+                "processing_failed",
+                "duplicate"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "providerEventType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by provider event type",
+            "schema": {
+              "example": "transaction.completed",
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Start date",
+            "schema": {
+              "example": "2026-03-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "End date",
+            "schema": {
+              "example": "2026-03-16T23:59:59Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/IncomingWebhookLogListDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Incoming Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/incoming-webhooks/logs/{logId}": {
+      "get": {
+        "operationId": "IncomingWebhookController_getLogDetail",
+        "summary": "Get incoming webhook log detail",
+        "parameters": [
+          {
+            "name": "logId",
+            "required": true,
+            "in": "path",
+            "description": "Log entry ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Log detail retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/IncomingWebhookLogDataDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing JWT token / API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Unauthorized \u2014 invalid or missing JWT token / API key"
+                        },
+                        "errorCode": {
+                          "example": "AUTHENTICATION_ERROR"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 401
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "User/API key does not have permission for this organization, or this API key does not have permission to perform this action / is not associated with an active organization."
+                        },
+                        "errorCode": {
+                          "example": "FORBIDDEN"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 403
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Log not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Log not found"
+                        },
+                        "errorCode": {
+                          "example": "NOT_FOUND"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 404
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ExternalErrorResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "message": {
+                          "example": "Rate limit exceeded for this API key"
+                        },
+                        "errorCode": {
+                          "example": "RATE_LIMIT_EXCEEDED"
+                        },
+                        "error": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/ExternalErrorDetailDto"
+                            }
+                          ],
+                          "example": {
+                            "statusCode": 429
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Incoming Webhooks"
+        ],
+        "security": [
+          {
+            "X-Api-Key": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -14106,22 +17096,6 @@
           "updatedAt"
         ]
       },
-      "SingleStoreCreateResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Store data",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/StoreCreateResponseDto"
-              }
-            ]
-          }
-        },
-        "required": [
-          "data"
-        ]
-      },
       "CheckSlugAvailabilityDto": {
         "type": "object",
         "properties": {
@@ -14190,38 +17164,6 @@
         "required": [
           "available",
           "slug"
-        ]
-      },
-      "CheckSlugAvailabilityResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Slug availability data",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/SlugAvailabilityResponseDto"
-              }
-            ]
-          }
-        },
-        "required": [
-          "data"
-        ]
-      },
-      "StoreListResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Paginated store data",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PaginatedResponse"
-              }
-            ]
-          }
-        },
-        "required": [
-          "data"
         ]
       },
       "StoreResponseDto": {
@@ -14386,22 +17328,6 @@
           "isActive",
           "createdAt",
           "updatedAt"
-        ]
-      },
-      "SingleStoreResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Store data",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/StoreResponseDto"
-              }
-            ]
-          }
-        },
-        "required": [
-          "data"
         ]
       },
       "UpdateStoreLocationDto": {
@@ -18635,6 +21561,920 @@
           "currency",
           "commissions",
           "pagination"
+        ]
+      },
+      "CreateOutgoingWebhookDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Webhook endpoint URL (HTTPS required)",
+            "example": "https://example.com/webhooks/chatter"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label for the webhook (max 64 chars)",
+            "example": "Production Server"
+          },
+          "events": {
+            "description": "Event types to subscribe to. Use [\"*\"] for all events.",
+            "example": [
+              "order.created",
+              "order.confirmed"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "url",
+          "events"
+        ]
+      },
+      "UpdateOutgoingWebhookDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Updated URL (HTTPS required)",
+            "example": "https://example.com/webhooks/chatter-v2"
+          },
+          "label": {
+            "type": "string",
+            "description": "Updated label",
+            "example": "Staging Server"
+          },
+          "events": {
+            "description": "Updated event subscriptions",
+            "example": [
+              "order.created",
+              "order.cancelled"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Updated status",
+            "enum": [
+              "active",
+              "paused"
+            ]
+          }
+        }
+      },
+      "OutgoingWebhookResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "organizationId": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "live"
+            ],
+            "example": "sandbox"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://example.com/webhooks/chatter"
+          },
+          "label": {
+            "type": "string",
+            "example": "Production Server"
+          },
+          "maskedSecret": {
+            "type": "string",
+            "example": "whsec_****c3d4"
+          },
+          "events": {
+            "example": [
+              "order.created",
+              "payment.completed"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "disabled"
+            ],
+            "example": "active"
+          },
+          "failureCount": {
+            "type": "number",
+            "example": 0
+          },
+          "lastDeliveredAt": {
+            "type": "string",
+            "example": "2026-03-15T10:30:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-03-10T08:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-03-14T12:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "organizationId",
+          "environment",
+          "url",
+          "label",
+          "maskedSecret",
+          "events",
+          "status",
+          "failureCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "OutgoingWebhookWithSecretResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "organizationId": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "live"
+            ],
+            "example": "sandbox"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://example.com/webhooks/chatter"
+          },
+          "label": {
+            "type": "string",
+            "example": "Production Server"
+          },
+          "maskedSecret": {
+            "type": "string",
+            "example": "whsec_****c3d4"
+          },
+          "events": {
+            "example": [
+              "order.created",
+              "payment.completed"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "disabled"
+            ],
+            "example": "active"
+          },
+          "failureCount": {
+            "type": "number",
+            "example": 0
+          },
+          "lastDeliveredAt": {
+            "type": "string",
+            "example": "2026-03-15T10:30:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-03-10T08:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-03-14T12:00:00Z"
+          },
+          "secret": {
+            "type": "string",
+            "description": "HMAC signing secret \u2014 only shown once at creation",
+            "example": "whsec_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2"
+          }
+        },
+        "required": [
+          "id",
+          "organizationId",
+          "environment",
+          "url",
+          "label",
+          "maskedSecret",
+          "events",
+          "status",
+          "failureCount",
+          "createdAt",
+          "updatedAt",
+          "secret"
+        ]
+      },
+      "OutgoingWebhookDataDto": {
+        "type": "object",
+        "properties": {
+          "webhook": {
+            "$ref": "#/components/schemas/OutgoingWebhookResponseDto"
+          }
+        },
+        "required": [
+          "webhook"
+        ]
+      },
+      "OutgoingWebhookWithSecretDataDto": {
+        "type": "object",
+        "properties": {
+          "webhook": {
+            "$ref": "#/components/schemas/OutgoingWebhookWithSecretResponseDto"
+          }
+        },
+        "required": [
+          "webhook"
+        ]
+      },
+      "OutgoingWebhookListDataDto": {
+        "type": "object",
+        "properties": {
+          "webhooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OutgoingWebhookResponseDto"
+            }
+          }
+        },
+        "required": [
+          "webhooks"
+        ]
+      },
+      "OutgoingWebhookLogResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "webhookEndpointId": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "eventId": {
+            "type": "string",
+            "example": "evt_01H9X"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "order.created"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://example.com/webhooks/chatter"
+          },
+          "responseStatusCode": {
+            "type": "number",
+            "example": 200
+          },
+          "responseTimeMs": {
+            "type": "number",
+            "example": 120
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "delivered",
+              "failed",
+              "retrying"
+            ],
+            "example": "delivered"
+          },
+          "attempt": {
+            "type": "number",
+            "example": 1
+          },
+          "nextRetryAt": {
+            "type": "string",
+            "example": "2026-03-16T11:00:00Z"
+          },
+          "error": {
+            "type": "string",
+            "example": "Connection timeout"
+          },
+          "triggeredBy": {
+            "type": "string",
+            "example": "system"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-03-16T10:30:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "webhookEndpointId",
+          "eventId",
+          "eventType",
+          "url",
+          "status",
+          "attempt",
+          "triggeredBy",
+          "createdAt"
+        ]
+      },
+      "OutgoingWebhookLogDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "webhookEndpointId": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "eventId": {
+            "type": "string",
+            "example": "evt_01H9X"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "order.created"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://example.com/webhooks/chatter"
+          },
+          "responseStatusCode": {
+            "type": "number",
+            "example": 200
+          },
+          "responseTimeMs": {
+            "type": "number",
+            "example": 120
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "delivered",
+              "failed",
+              "retrying"
+            ],
+            "example": "delivered"
+          },
+          "attempt": {
+            "type": "number",
+            "example": 1
+          },
+          "nextRetryAt": {
+            "type": "string",
+            "example": "2026-03-16T11:00:00Z"
+          },
+          "error": {
+            "type": "string",
+            "example": "Connection timeout"
+          },
+          "triggeredBy": {
+            "type": "string",
+            "example": "system"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-03-16T10:30:00Z"
+          },
+          "requestHeaders": {
+            "type": "object",
+            "description": "Request headers sent (sensitive values redacted)"
+          },
+          "requestBody": {
+            "type": "object",
+            "description": "Payload sent"
+          },
+          "responseBody": {
+            "type": "string",
+            "description": "First 4 KB of response body"
+          }
+        },
+        "required": [
+          "id",
+          "webhookEndpointId",
+          "eventId",
+          "eventType",
+          "url",
+          "status",
+          "attempt",
+          "triggeredBy",
+          "createdAt",
+          "requestBody"
+        ]
+      },
+      "OutgoingWebhookLogDataDto": {
+        "type": "object",
+        "properties": {
+          "log": {
+            "$ref": "#/components/schemas/OutgoingWebhookLogDetailResponseDto"
+          }
+        },
+        "required": [
+          "log"
+        ]
+      },
+      "OutgoingWebhookLogListDataDto": {
+        "type": "object",
+        "properties": {
+          "logs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OutgoingWebhookLogResponseDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "logs",
+          "meta"
+        ]
+      },
+      "TestOutgoingWebhookDto": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "description": "Event type to simulate",
+            "example": "order.created"
+          }
+        }
+      },
+      "DeliveryResultResponseDto": {
+        "type": "object",
+        "properties": {
+          "delivered": {
+            "type": "boolean",
+            "example": true
+          },
+          "statusCode": {
+            "type": "number",
+            "example": 200
+          },
+          "responseTimeMs": {
+            "type": "number",
+            "example": 340
+          },
+          "error": {
+            "type": "string",
+            "example": "Connection timeout"
+          }
+        },
+        "required": [
+          "delivered"
+        ]
+      },
+      "CreateIncomingWebhookDto": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "Provider type",
+            "enum": [
+              "moniepoint",
+              "opay",
+              "paystack",
+              "flutterwave",
+              "custom"
+            ],
+            "example": "moniepoint"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label for the webhook (max 64 chars)",
+            "example": "Store POS Terminal"
+          },
+          "sourceType": {
+            "type": "string",
+            "description": "Source type: \"pos\" for POS terminal payments, \"bank_transfer\" for virtual account / bank transfer notifications",
+            "enum": [
+              "pos",
+              "bank_transfer",
+              "other"
+            ],
+            "example": "pos"
+          },
+          "signatureScheme": {
+            "type": "string",
+            "description": "Override the default signature scheme for this provider",
+            "enum": [
+              "hmac_sha256_header",
+              "hmac_sha512_header",
+              "direct_comparison",
+              "basic_auth",
+              "opay_body_hmac",
+              "none",
+              "custom"
+            ]
+          },
+          "signatureHeader": {
+            "type": "string",
+            "description": "Override the default signature header for this provider",
+            "example": "x-custom-signature"
+          }
+        },
+        "required": [
+          "provider",
+          "label"
+        ]
+      },
+      "UpdateIncomingWebhookDto": {
+        "type": "object",
+        "properties": {
+          "providerSecret": {
+            "type": "string",
+            "description": "Provider secret to complete setup",
+            "example": "mfk_live_abc123def456"
+          },
+          "label": {
+            "type": "string",
+            "description": "Updated label",
+            "example": "Main POS Terminal"
+          },
+          "sourceType": {
+            "type": "string",
+            "description": "Updated source type: \"pos\" for POS terminal, \"bank_transfer\" for bank account",
+            "enum": [
+              "pos",
+              "bank_transfer",
+              "other"
+            ],
+            "example": "pos"
+          },
+          "status": {
+            "type": "string",
+            "description": "Updated status",
+            "enum": [
+              "active",
+              "paused"
+            ]
+          },
+          "signatureScheme": {
+            "type": "string",
+            "description": "Override signature scheme",
+            "enum": [
+              "hmac_sha256_header",
+              "hmac_sha512_header",
+              "direct_comparison",
+              "basic_auth",
+              "opay_body_hmac",
+              "none",
+              "custom"
+            ]
+          },
+          "signatureHeader": {
+            "type": "string",
+            "description": "Override signature header",
+            "example": "x-custom-signature"
+          }
+        }
+      },
+      "IncomingWebhookResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "organizationId": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "live"
+            ],
+            "example": "live"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "moniepoint",
+              "opay",
+              "paystack",
+              "flutterwave",
+              "custom"
+            ],
+            "example": "moniepoint"
+          },
+          "label": {
+            "type": "string",
+            "example": "Store POS Terminal"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "pos",
+              "bank_transfer",
+              "other"
+            ],
+            "example": "pos",
+            "description": "Payment source type (pos, bank_transfer, other)"
+          },
+          "ingestionUrl": {
+            "type": "string",
+            "example": "https://api.usechatter.app/v1/webhooks/incoming/507f1f77bcf86cd799439011/events"
+          },
+          "requiresSecret": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether setup still requires providing a provider secret (false once configured)"
+          },
+          "secretConfigured": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether the provider secret has been configured (Step 2 of setup)"
+          },
+          "signatureScheme": {
+            "type": "string",
+            "enum": [
+              "hmac_sha256_header",
+              "hmac_sha512_header",
+              "direct_comparison",
+              "basic_auth",
+              "opay_body_hmac",
+              "none",
+              "custom"
+            ],
+            "example": "hmac_sha512_header"
+          },
+          "signatureHeader": {
+            "type": "string",
+            "example": "x-monnify-signature"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending_secret",
+              "active",
+              "paused",
+              "disabled"
+            ],
+            "example": "active"
+          },
+          "eventsReceived": {
+            "type": "number",
+            "example": 1203
+          },
+          "lastReceivedAt": {
+            "type": "string",
+            "example": "2026-03-15T10:30:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-03-10T08:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-03-14T12:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "organizationId",
+          "environment",
+          "provider",
+          "label",
+          "ingestionUrl",
+          "requiresSecret",
+          "secretConfigured",
+          "signatureScheme",
+          "status",
+          "eventsReceived",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "IncomingWebhookDataDto": {
+        "type": "object",
+        "properties": {
+          "webhook": {
+            "$ref": "#/components/schemas/IncomingWebhookResponseDto"
+          }
+        },
+        "required": [
+          "webhook"
+        ]
+      },
+      "IncomingWebhookListDataDto": {
+        "type": "object",
+        "properties": {
+          "webhooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IncomingWebhookResponseDto"
+            }
+          }
+        },
+        "required": [
+          "webhooks"
+        ]
+      },
+      "IncomingWebhookLogResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "incomingWebhookId": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "provider": {
+            "type": "string",
+            "example": "moniepoint"
+          },
+          "sourceIp": {
+            "type": "string",
+            "example": "41.184.56.78"
+          },
+          "signatureValid": {
+            "type": "boolean",
+            "example": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "received",
+              "signature_failed",
+              "processing",
+              "processed",
+              "processing_failed",
+              "duplicate"
+            ],
+            "example": "processed"
+          },
+          "providerEventId": {
+            "type": "string",
+            "example": "txn_12345"
+          },
+          "providerEventType": {
+            "type": "string",
+            "example": "transaction.completed"
+          },
+          "mappedEventType": {
+            "type": "string",
+            "example": "payment.received"
+          },
+          "processedAt": {
+            "type": "string",
+            "example": "2026-03-16T10:35:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-03-16T10:30:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "incomingWebhookId",
+          "provider",
+          "sourceIp",
+          "signatureValid",
+          "status",
+          "createdAt"
+        ]
+      },
+      "IncomingWebhookLogDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "incomingWebhookId": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "provider": {
+            "type": "string",
+            "example": "moniepoint"
+          },
+          "sourceIp": {
+            "type": "string",
+            "example": "41.184.56.78"
+          },
+          "signatureValid": {
+            "type": "boolean",
+            "example": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "received",
+              "signature_failed",
+              "processing",
+              "processed",
+              "processing_failed",
+              "duplicate"
+            ],
+            "example": "processed"
+          },
+          "providerEventId": {
+            "type": "string",
+            "example": "txn_12345"
+          },
+          "providerEventType": {
+            "type": "string",
+            "example": "transaction.completed"
+          },
+          "mappedEventType": {
+            "type": "string",
+            "example": "payment.received"
+          },
+          "processedAt": {
+            "type": "string",
+            "example": "2026-03-16T10:35:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-03-16T10:30:00Z"
+          },
+          "requestHeaders": {
+            "type": "object",
+            "description": "Request headers received (sensitive values redacted)"
+          },
+          "requestBody": {
+            "type": "object",
+            "description": "Request body received (sanitized)"
+          },
+          "processingError": {
+            "type": "string",
+            "example": "Mapping not found for event type"
+          }
+        },
+        "required": [
+          "id",
+          "incomingWebhookId",
+          "provider",
+          "sourceIp",
+          "signatureValid",
+          "status",
+          "createdAt",
+          "requestBody"
+        ]
+      },
+      "IncomingWebhookLogDataDto": {
+        "type": "object",
+        "properties": {
+          "log": {
+            "$ref": "#/components/schemas/IncomingWebhookLogDetailResponseDto"
+          }
+        },
+        "required": [
+          "log"
+        ]
+      },
+      "IncomingWebhookLogListDataDto": {
+        "type": "object",
+        "properties": {
+          "logs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IncomingWebhookLogResponseDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "logs",
+          "meta"
         ]
       }
     }

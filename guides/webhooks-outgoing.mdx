@@ -22,7 +22,7 @@ curl -X POST https://api.usechatter.app/v1/organizations/outgoing-webhooks \
 
 | Field | What it means |
 | --- | --- |
-| `url` | The address on your server that Chatter sends events to. It needs to be publicly reachable — addresses like `localhost` or private/internal IPs are rejected up front, so a bad URL is caught right away instead of quietly failing later. |
+| `url` | The address on your server that Chatter sends events to. It must start with `https://` and be publicly reachable — addresses like `localhost` or private/internal IPs are rejected up front. Chatter also does a quick reachability check against the URL when you create the endpoint, so a bad or unreachable URL is caught right away instead of quietly failing on the first real delivery. |
 | `label` | A name so you can tell endpoints apart. |
 | `events` | Which event types you want to receive — see below. |
 
@@ -50,7 +50,7 @@ The response includes a **secret** — but only once:
 
 Copy `secret` somewhere safe, like a secrets manager — you'll need it to verify events are really from Chatter, and no other response ever shows it again. If you lose it, delete the endpoint and create a new one to get a fresh secret.
 
-Chatter blocks obviously unsafe URLs (`localhost`, private/internal IPs) at creation time, so a bad URL fails immediately instead of failing silently later at delivery time. Each environment allows up to **10 outgoing webhooks per account**.
+Each environment allows up to **10 outgoing webhooks per account**.
 
 <Tip>
   Prefer clicking over calling the API? You can do all of this from your dashboard's **Webhooks** page instead — same result, just a UI. There, the environment comes from your dashboard's sandbox/live toggle instead of your key.
