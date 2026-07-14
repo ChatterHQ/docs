@@ -14042,7 +14042,8 @@
           },
           "path": {
             "type": "string",
-            "example": "/v1/marketplace/stores/64f1a2b3c4d5e6f7a8b9c0d1"
+            "description": "The request path that produced this error — always the actual path called, not a fixed value",
+            "example": "/v1/<endpoint-path>"
           }
         },
         "required": [
