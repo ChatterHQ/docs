@@ -1,13 +1,16 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Chatter Partner API",
+  "name": "Hushscale Partner API",
   "colors": {
-    "primary": "#7C3AED",
-    "light": "#A78BFA",
-    "dark": "#6D28D9"
+    "primary": "#007AFF",
+    "light": "#31CAFF",
+    "dark": "#0038BC"
   },
   "favicon": "/favicon.svg",
+  "fonts": {
+    "family": "Manrope"
+  },
   "navigation": {
     "tabs": [
       {

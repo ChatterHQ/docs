@@ -3,15 +3,15 @@ title: "Event catalog"
 description: "Every outgoing webhook event type, shown as the full payload you'll actually receive."
 ---
 
-Every outgoing webhook delivery has the same overall shape, no matter which event it is — Chatter just fills in a different `data` section depending on what happened. Below, each event type shows the **entire payload** you'll receive, not just the `data` part on its own, so you can see exactly what lands on your endpoint.
+Every outgoing webhook delivery has the same overall shape, no matter which event it is — Hushscale just fills in a different `data` section depending on what happened. Below, each event type shows the **entire payload** you'll receive, not just the `data` part on its own, so you can see exactly what lands on your endpoint.
 
 | Field | What it is |
 | --- | --- |
-| `id` | A unique ID for this event. If Chatter retries a delivery, it reuses the same `id` — safe to use for making sure you don't process the same event twice. |
+| `id` | A unique ID for this event. If Hushscale retries a delivery, it reuses the same `id` — safe to use for making sure you don't process the same event twice. |
 | `type` | The event type, like `order.confirmed`. Use this to decide how to handle the payload. |
 | `environment` | Either `sandbox` or `live`. A sandbox endpoint only ever receives sandbox events, and a live endpoint only ever receives live ones. |
 | `created_at` | When the event happened. |
-| `organization_id` | The ID of the merchant account this event belongs to — useful if your app connects to more than one Chatter account. |
+| `organization_id` | The ID of the merchant account this event belongs to — useful if your app connects to more than one Hushscale account. |
 | `data` | The details specific to this event type, shown in full below for each one. |
 | `metadata.api_version` | A version tag for this payload shape, in case it changes later. |
 
@@ -358,7 +358,7 @@ Sent when someone's access is taken away — a refund, chargeback, or manual act
 
 ## Not live yet — safe to subscribe to, but nothing will arrive
 
-These event types exist and Chatter will let you subscribe to them (including through a wildcard like `payment.*`), but nothing triggers them yet — so subscribing is harmless, you just won't receive anything for them until they're switched on.
+These event types exist and Hushscale will let you subscribe to them (including through a wildcard like `payment.*`), but nothing triggers them yet — so subscribing is harmless, you just won't receive anything for them until they're switched on.
 
 | Category | Types |
 | --- | --- |

@@ -1,16 +1,16 @@
 ---
 title: "Webhooks"
-description: "Get real-time notifications from Chatter, or forward your own payment provider's events in for loyalty tracking."
+description: "Get real-time notifications from Hushscale, or forward your own payment provider's events in for loyalty tracking."
 ---
 
-Chatter has two separate webhook systems. They send data in opposite directions, so pick the one that matches what you're building:
+Hushscale has two separate webhook systems. They send data in opposite directions, so pick the one that matches what you're building:
 
 | | Direction | What it's for | Who sets it up |
 | --- | --- | --- | --- |
-| **[Outgoing webhooks](/guides/webhooks-outgoing)** | Chatter → your server | Notifies your server the moment something happens in a merchant's account — an order, a payment, a loyalty reward, a digital product download | You, with your API key or from the dashboard |
-| **[Incoming webhooks](/guides/webhooks-incoming)** | Your payment provider → Chatter | Forwards events from a provider you already use (Moniepoint, OPay, Paystack, Flutterwave) so Chatter can award loyalty points on sales it never directly processed | You, with your API key or from the dashboard, then set up on the provider's side too |
+| **[Outgoing webhooks](/guides/webhooks-outgoing)** | Hushscale → your server | Notifies your server the moment something happens in a merchant's account — an order, a payment, a loyalty reward, a digital product download | You, with your API key or from the dashboard |
+| **[Incoming webhooks](/guides/webhooks-incoming)** | Your payment provider → Hushscale | Forwards events from a provider you already use (Moniepoint, OPay, Paystack, Flutterwave) so Hushscale can award loyalty points on sales it never directly processed | You, with your API key or from the dashboard, then set up on the provider's side too |
 
-Most people only need **outgoing webhooks** — it's how your server finds out about order and payment activity without constantly asking the API "did anything change?" (polling). Incoming webhooks are only needed if a merchant takes payments through a provider outside Chatter's own payment system and still wants those sales to count toward loyalty.
+Most people only need **outgoing webhooks** — it's how your server finds out about order and payment activity without constantly asking the API "did anything change?" (polling). Incoming webhooks are only needed if a merchant takes payments through a provider outside Hushscale's own payment system and still wants those sales to count toward loyalty.
 
 <Note>
   You can set up both kinds of webhooks the same way you'd call any other endpoint on this API — with `X-Api-Key` — or by clicking through your dashboard's **Webhooks** page instead. No dashboard login is required if your integration is otherwise fully API-driven.

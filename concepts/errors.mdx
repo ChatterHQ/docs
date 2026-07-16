@@ -1,9 +1,9 @@
 ---
 title: "Errors"
-description: "How the Chatter Partner API reports errors and the status codes to expect."
+description: "How the Hushscale Partner API reports errors and the status codes to expect."
 ---
 
-The API uses conventional HTTP status codes. A `2xx` means success; `4xx` means the request was rejected (usually something you can fix); `5xx` means something went wrong on Chatter's side.
+The API uses conventional HTTP status codes. A `2xx` means success; `4xx` means the request was rejected (usually something you can fix); `5xx` means something went wrong on Hushscale's side.
 
 ## Status codes
 
@@ -15,7 +15,7 @@ The API uses conventional HTTP status codes. A `2xx` means success; `4xx` means 
 | `401` | Unauthorized            | Missing, malformed, or revoked API key. See [Authentication](/authentication). |
 | `403` | Forbidden               | The key is valid but lacks access to this resource.                       |
 | `404` | Not Found               | The resource (or `storeId`) doesn't exist, or isn't visible to this key.  |
-| `500` | Internal Server Error   | A problem on Chatter's side — retry, and contact support if it persists.  |
+| `500` | Internal Server Error   | A problem on Hushscale's side — retry, and contact support if it persists.  |
 
 ## Handling errors
 

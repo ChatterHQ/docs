@@ -1,9 +1,9 @@
 ---
 title: "Outgoing webhooks"
-description: "Receive real-time notifications when orders, payments, loyalty, or digital-product events happen in a merchant's Chatter org."
+description: "Receive real-time notifications when orders, payments, loyalty, or digital-product events happen in a merchant's Hushscale org."
 ---
 
-An outgoing webhook is Chatter calling your server the moment something happens — an order ships, a virtual account gets paid into, a customer earns loyalty points, a digital product gets downloaded. Instead of your app repeatedly asking "did anything change?", Chatter tells you as soon as it does. See the [event catalog](/guides/webhooks-events) for every event type and what its payload looks like.
+An outgoing webhook is Hushscale calling your server the moment something happens — an order ships, a virtual account gets paid into, a customer earns loyalty points, a digital product gets downloaded. Instead of your app repeatedly asking "did anything change?", Hushscale tells you as soon as it does. See the [event catalog](/guides/webhooks-events) for every event type and what its payload looks like.
 
 ## Register an endpoint
 
@@ -22,7 +22,7 @@ curl -X POST https://api.usechatter.app/v1/organizations/outgoing-webhooks \
 
 | Field | What it means |
 | --- | --- |
-| `url` | The address on your server that Chatter sends events to. It must start with `https://` and be publicly reachable — addresses like `localhost` or private/internal IPs are rejected up front. Chatter also does a quick reachability check against the URL when you create the endpoint, so a bad or unreachable URL is caught right away instead of quietly failing on the first real delivery. |
+| `url` | The address on your server that Hushscale sends events to. It must start with `https://` and be publicly reachable — addresses like `localhost` or private/internal IPs are rejected up front. Hushscale also does a quick reachability check against the URL when you create the endpoint, so a bad or unreachable URL is caught right away instead of quietly failing on the first real delivery. |
 | `label` | A name so you can tell endpoints apart. |
 | `events` | Which event types you want to receive — see below. |
 
@@ -48,7 +48,7 @@ The response includes a **secret** — but only once:
 }
 ```
 
-Copy `secret` somewhere safe, like a secrets manager — you'll need it to verify events are really from Chatter, and no other response ever shows it again. If you lose it, delete the endpoint and create a new one to get a fresh secret.
+Copy `secret` somewhere safe, like a secrets manager — you'll need it to verify events are really from Hushscale, and no other response ever shows it again. If you lose it, delete the endpoint and create a new one to get a fresh secret.
 
 Each environment allows up to **10 outgoing webhooks per account**.
 
@@ -70,9 +70,9 @@ The `events` field accepts three kinds of patterns, and you can mix them on one 
   If you want "all order activity" without picking each event one by one, use `order.*`. New event types added to that category later start arriving automatically — no changes needed on your end.
 </Tip>
 
-## Check that events really came from Chatter
+## Check that events really came from Hushscale
 
-Anyone could send a request to your endpoint's URL pretending to be Chatter, so you need a way to confirm a request is genuine and hasn't been tampered with. Every delivery includes three headers to help you do that:
+Anyone could send a request to your endpoint's URL pretending to be Hushscale, so you need a way to confirm a request is genuine and hasn't been tampered with. Every delivery includes three headers to help you do that:
 
 ```
 Webhook-Id: evt_65f1c2a4e4b0c1a2b3d4e5f6
@@ -80,7 +80,7 @@ Webhook-Timestamp: 1799749243
 Webhook-Signature: t=1799749243,v1=6d1f...a92c
 ```
 
-Here's the idea: Chatter combines the timestamp and the exact request body, runs them through a one-way scrambling function (called HMAC-SHA256) together with your secret, and sends you the result as `Webhook-Signature`. You do the same calculation on your end using your copy of the secret. If your result matches what Chatter sent, the request is genuine — nobody else knows your secret, so nobody else could have produced that value.
+Here's the idea: Hushscale combines the timestamp and the exact request body, runs them through a one-way scrambling function (called HMAC-SHA256) together with your secret, and sends you the result as `Webhook-Signature`. You do the same calculation on your end using your copy of the secret. If your result matches what Hushscale sent, the request is genuine — nobody else knows your secret, so nobody else could have produced that value.
 
 Pick your language below:
 
@@ -186,16 +186,16 @@ public static class ChatterWebhookVerifier
 
 A few things worth knowing:
 
-- Check the signature against the **exact bytes Chatter sent**, before your framework parses the JSON. If you re-encode the JSON yourself and check against that instead, tiny formatting differences (like field order or spacing) can make a genuine request look invalid.
+- Check the signature against the **exact bytes Hushscale sent**, before your framework parses the JSON. If you re-encode the JSON yourself and check against that instead, tiny formatting differences (like field order or spacing) can make a genuine request look invalid.
 - Reject anything where the timestamp is more than 5 minutes old — this stops someone from capturing an old request and resending it later to trick your server.
-- Chatter doesn't follow redirects. If your endpoint responds with a redirect (`301`/`302`), that delivery is marked as failed — point the URL at its final destination directly.
+- Hushscale doesn't follow redirects. If your endpoint responds with a redirect (`301`/`302`), that delivery is marked as failed — point the URL at its final destination directly.
 
 ## What happens if delivery fails
 
-Chatter doesn't wait around for your server to respond before moving on — sending an event queues it up and continues immediately.
+Hushscale doesn't wait around for your server to respond before moving on — sending an event queues it up and continues immediately.
 
-- **Timeout** — Chatter waits up to 15 seconds for your server to respond. Anything that isn't a success response (`2xx`), or that times out, disconnects, or redirects, counts as a failed attempt.
-- **Retries** — Chatter tries again automatically, up to 6 times, waiting longer between each attempt:
+- **Timeout** — Hushscale waits up to 15 seconds for your server to respond. Anything that isn't a success response (`2xx`), or that times out, disconnects, or redirects, counts as a failed attempt.
+- **Retries** — Hushscale tries again automatically, up to 6 times, waiting longer between each attempt:
 
   | Attempt | How long after the last one |
   | --- | --- |
@@ -207,7 +207,7 @@ Chatter doesn't wait around for your server to respond before moving on — send
   | 6 | 4 hours |
 
 - **One log per event** — you'll see one entry per event (not one per attempt), and it updates as retries happen: pending → retrying → delivered, or failed once all 6 attempts are used up.
-- **Endpoints that keep failing get paused automatically** — if an endpoint fails all 6 attempts too many times in a row (50, by default), Chatter turns it off so it stops wasting effort on a broken connection. You'll need to fix the problem and turn it back on yourself, which also resets the failure count.
+- **Endpoints that keep failing get paused automatically** — if an endpoint fails all 6 attempts too many times in a row (50, by default), Hushscale turns it off so it stops wasting effort on a broken connection. You'll need to fix the problem and turn it back on yourself, which also resets the failure count.
 - **Retrying by hand** — you can also manually resend any single failed delivery. This is separate from the automatic retries, happens once, right away, and does count against the auto-pause limit if it fails too.
 
 ## Test before going live

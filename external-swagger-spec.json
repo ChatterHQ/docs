@@ -19028,7 +19028,7 @@
           },
           "userId": {
             "type": "string",
-            "description": "Chatter User ID, if linked",
+            "description": "Hushscale User ID, if linked",
             "example": "507f1f77bcf86cd799439015"
           },
           "rewardId": {
